@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เรียนรู้เรื่อง วงจรอับ (Deadlock) | สื่อการเรียนรู้อินเตอร์แอคทีฟ</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Floating Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#hero" class="nav-logo">
+                <svg viewBox="0 0 24 24" class="logo-icon">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+                <span>OS: Deadlock</span>
+            </a>
+            <button class="menu-toggle" id="menuToggle" aria-label="เปิดเมนู">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#hero" class="nav-link active">หน้าแรก</a></li>
+                <li><a href="#objectives" class="nav-link">วัตถุประสงค์</a></li>
+                <li><a href="#lesson" class="nav-link">บทเรียน</a></li>
+                <li><a href="#game-section" class="nav-link nav-btn">เล่นเกมเรียนรู้</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="hero" class="hero-section">
+        <div class="hero-bg-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+        </div>
+        <div class="container hero-container">
+            <div class="hero-content">
+                <span class="hero-tag">ระบบปฏิบัติการ (Operating System)</span>
+                <h1 class="hero-title">วงจรอับ <span class="highlight">Deadlock</span></h1>
+                <p class="hero-subtitle">เมื่อทุกสิ่งหยุดนิ่งเพราะการรอคอยที่ไม่มีวันสิ้นสุด เรียนรู้เข้าใจง่ายผ่านแผนภาพอินเตอร์แอคทีฟและเกมจัดสรรทรัพยากรแสนสนุก</p>
+                <div class="hero-actions">
+                    <a href="#lesson" class="btn btn-primary">
+                        <span>เริ่มเรียนรู้บทเรียน</span>
+                        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+                    </a>
+                    <a href="#game-section" class="btn btn-secondary">
+                        <span>ไปที่เกมจัดสรร</span>
+                        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="visual-card">
+                    <!-- Concept Illustration: Processes locking each other -->
+                    <svg viewBox="0 0 400 400" class="hero-illustration">
+                        <defs>
+                            <linearGradient id="grad-p1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#E07A5F" />
+                                <stop offset="100%" stop-color="#C85A53" />
+                            </linearGradient>
+                            <linearGradient id="grad-p2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#81B29A" />
+                                <stop offset="100%" stop-color="#7FA99B" />
+                            </linearGradient>
+                            <linearGradient id="grad-r" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#F2CC8F" />
+                                <stop offset="100%" stop-color="#EBB15B" />
+                            </linearGradient>
+                            <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                                <feDropShadow dx="0" dy="8" stdDeviation="6" flood-opacity="0.15" />
+                            </filter>
+                        </defs>
+                        <!-- Grid Background -->
+                        <g opacity="0.1">
+                            <path d="M 0,50 L 400,50 M 0,100 L 400,100 M 0,150 L 400,150 M 0,200 L 400,200 M 0,250 L 400,250 M 0,300 L 400,300 M 0,350 L 400,350" stroke="#2F3E46" stroke-width="1"/>
+                            <path d="M 50,0 L 50,400 M 100,0 L 100,400 M 150,0 L 150,400 M 200,0 L 200,400 M 250,0 L 250,400 M 300,0 L 300,400 M 350,0 L 350,400" stroke="#2F3E46" stroke-width="1"/>
+                        </g>
+
+                        <!-- Outer Ring / Circle indicating Circular Wait -->
+                        <circle cx="200" cy="200" r="130" fill="none" stroke="#D96B43" stroke-width="3" stroke-dasharray="8 8" opacity="0.3" class="spinning-ring"/>
+
+                        <!-- Process 1 Node (P1) -->
+                        <g transform="translate(100, 120)" filter="url(#shadow)">
+                            <circle cx="0" cy="0" r="45" fill="url(#grad-p1)"/>
+                            <text x="0" y="5" font-family="'Plus Jakarta Sans', 'Noto Sans Thai'" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">Process A</text>
+                            <text x="0" y="22" font-family="'Plus Jakarta Sans', 'Noto Sans Thai'" font-size="10" fill="rgba(255,255,255,0.8)" text-anchor="middle">ถือทรัพยากร 1</text>
+                        </g>
+
+                        <!-- Process 2 Node (P2) -->
+                        <g transform="translate(300, 280)" filter="url(#shadow)">
+                            <circle cx="0" cy="0" r="45" fill="url(#grad-p1)"/>
+                            <text x="0" y="5" font-family="'Plus Jakarta Sans', 'Noto Sans Thai'" font-size="14" font-weight="bold" fill="#fff" text-anchor="middle">Process B</text>
+                            <text x="0" y="22" font-family="'Plus Jakarta Sans', 'Noto Sans Thai'" font-size="10" fill="rgba(255,255,255,0.8)" text-anchor="middle">ถือทรัพยากร 2</text>
+                        </g>
+
+                        <!-- Resource 1 Node (R1) -->
+                        <g transform="translate(300, 120)" filter="url(#shadow)">
+                            <rect x="-35" y="-35" width="70" height="70" rx="10" fill="url(#grad-r)"/>
+                            <text x="0" y="5" font-family="'Plus Jakarta Sans', 'Noto Sans Thai'" font-size="14" font-weight="bold" fill="#2F3E46" text-anchor="middle">Resource 1</text>
+                            <text x="0" y="20" font-family="'Plus Jakarta Sans', 'Noto Sans Thai'" font-size="10" fill="#5C5F7A" text-anchor="middle">จำนวน: 1</text>
+                        </g>
+
+                        <!-- Resource 2 Node (R2) -->
+                        <g transform="translate(100, 280)" filter="url(#shadow)">
+                            <rect x="-35" y="-35" width="70" height="70" rx="10" fill="url(#grad-r)"/>
+                            <text x="0" y="5" font-family="'Plus Jakarta Sans', 'Noto Sans Thai'" font-size="14" font-weight="bold" fill="#2F3E46" text-anchor="middle">Resource 2</text>
+                            <text x="0" y="20" font-family="'Plus Jakarta Sans', 'Noto Sans Thai'" font-size="10" fill="#5C5F7A" text-anchor="middle">จำนวน: 1</text>
+                        </g>
+
+                        <!-- Allocation Arrows (Solid Orange/Red line) -->
+                        <!-- R2 is assigned to P1 (R2 -> P1) -->
+                        <path d="M 100,245 L 100,175" stroke="#7FA99B" stroke-width="3" marker-end="url(#arrow-green)" fill="none" />
+                        <!-- P1 requests R1 (P1 -> R1) -->
+                        <path d="M 155,120 L 255,120" stroke="#C85A53" stroke-width="3" stroke-dasharray="5 3" marker-end="url(#arrow-red)" fill="none" class="pulse-line"/>
+                        
+                        <!-- R1 is assigned to P2 (R1 -> P2) -->
+                        <path d="M 300,165 L 300,225" stroke="#7FA99B" stroke-width="3" marker-end="url(#arrow-green)" fill="none" />
+                        <!-- P2 requests R2 (P2 -> R2) -->
+                        <path d="M 245,280 L 145,280" stroke="#C85A53" stroke-width="3" stroke-dasharray="5 3" marker-end="url(#arrow-red)" fill="none" class="pulse-line"/>
+
+                        <!-- Markers definitions -->
+                        <defs>
+                            <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#7FA99B"/>
+                            </marker>
+                            <marker id="arrow-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#C85A53"/>
+                            </marker>
+                        </defs>
+
+                        <!-- Lock Symbol in the middle -->
+                        <g transform="translate(200, 200)" class="lock-icon-group">
+                            <circle cx="0" cy="0" r="28" fill="#C85A53" />
+                            <!-- Lock icon -->
+                            <path d="M -8,-2 L -8,-7 A 8,8 0 0,1 8,-7 L 8,-2 L 10,-2 L 10,10 L -10,10 L -10,-2 Z M -4,-2 L 4,-2 L 4,-7 A 4,4 0 0,0 -4,-7 Z" fill="#fff"/>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Objectives Section -->
+    <section id="objectives" class="section objectives-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Target Outcomes</span>
+                <h2 class="section-title">วัตถุประสงค์การเรียนรู้</h2>
+                <p class="section-subtitle">สิ่งที่ผู้เรียนจะได้รับประโยชน์สูงสุดหลังจากการศึกษาผ่านสื่อการเรียนรู้นี้</p>
+            </div>
+            <div class="objectives-grid">
+                <div class="objective-card">
+                    <div class="card-icon-wrapper">
+                        <svg viewBox="0 0 24 24" class="card-icon"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+                    </div>
+                    <h3>เข้าใจนิยามและกลไก</h3>
+                    <p>เข้าใจแนวคิดพื้นฐาน สาเหตุ และกลไกการเกิด "วงจรอับ" (Deadlock) ของทรัพยากรระบบคอมพิวเตอร์ได้อย่างถูกต้อง</p>
+                </div>
+                <div class="objective-card">
+                    <div class="card-icon-wrapper">
+                        <svg viewBox="0 0 24 24" class="card-icon"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    </div>
+                    <h3>วิเคราะห์เงื่อนไข 4 ประการ</h3>
+                    <p>สามารถระบุและอธิบายกฎเหล็ก 4 เงื่อนไข (Coffman Conditions) ที่เป็นตัวกระตุ้นให้เกิดสภาวะวงจรอับได้ครบถ้วน</p>
+                </div>
+                <div class="objective-card">
+                    <div class="card-icon-wrapper">
+                        <svg viewBox="0 0 24 24" class="card-icon"><path d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zm1-15h-2v6h2V7zm0 8h-2v2h2v-2z"/></svg>
+                    </div>
+                    <h3>แก้ไขและจัดการระบบ</h3>
+                    <p>เรียนรู้วิธีการแก้ปัญหา ป้องกัน หลีกเลี่ยง และตรวจจับเพื่อแก้ไขเมื่อเกิด Deadlock พร้อมประยุกต์ใช้ในการเขียนโปรแกรม</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lesson Section -->
+    <section id="lesson" class="section lesson-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Interactive Lessons</span>
+                <h2 class="section-title">บทเรียนแบบเห็นภาพและมีปฏิสัมพันธ์</h2>
+                <p class="section-subtitle">เลือกหัวข้อเพื่อเรียนรู้ด้วยภาพจำลองและทดลองควบคุมด้วยตัวคุณเอง</p>
+            </div>
+
+            <!-- Lesson Tabs -->
+            <div class="lesson-tabs">
+                <button class="tab-btn active" data-tab="analogy">
+                    <svg viewBox="0 0 24 24" width="18" height="18"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                    <span>1. อุปมาอุปไมย (ทางแยก)</span>
+                </button>
+                <button class="tab-btn" data-tab="coffman">
+                    <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+                    <span>2. เงื่อนไขเกิดเดดล็อก</span>
+                </button>
+                <button class="tab-btn" data-tab="handling">
+                    <svg viewBox="0 0 24 24" width="18" height="18"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.3C.5 6.7.9 9.8 2.9 11.8c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.1z"/></svg>
+                    <span>3. วิธีการแก้ไขรับมือ</span>
+                </button>
+            </div>
+
+            <!-- Tab Content 1: Analogy -->
+            <div class="tab-content active" id="tab-analogy">
+                <div class="lesson-grid">
+                    <div class="lesson-desc">
+                        <h3 class="lesson-subtitle-thai">อุปมาอุปไมย: ปัญหารถติดกลางสี่แยก</h3>
+                        <p>การเกิด <strong>Deadlock (วงจรอับ)</strong> สามารถอธิบายได้เห็นภาพง่ายที่สุดผ่านการจราจรกลางสี่แยกที่ไม่มีสัญญาณไฟควบคุม</p>
+                        <div class="desc-card">
+                            <h4>เหตุการณ์จำลอง:</h4>
+                            <ul>
+                                <li><strong>รถยนต์แต่ละคัน</strong> เปรียบเสมือน <strong>กระบวนการ (Processes)</strong></li>
+                                <li><strong>ถนนช่วงกลางสี่แยก</strong> เปรียบเสมือน <strong>ทรัพยากร (Resources)</strong></li>
+                                <li>เมื่อรถยนต์ทั้ง 4 คันวิ่งเข้ากลางแยกพร้อมกันและไม่ยอมถอยหลัง แต่ละคันจะถือครองถนนตรงหน้าและร้องขอจะเดินหน้าทับถนนที่อีกคันถือครองอยู่ ส่งผลให้รถขยับไม่ได้ถาวร!</li>
+                            </ul>
+                        </div>
+                        <div class="control-panel">
+                            <h4>ควบคุมตัวจำลองจราจร:</h4>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline active" id="btn-traffic-normal">จราจรปกติ</button>
+                                <button class="btn btn-sm btn-danger" id="btn-traffic-deadlock">จำลอง Deadlock</button>
+                                <button class="btn btn-sm btn-success" id="btn-traffic-resolve">แก้ปัญหา (ถอยรถ)</button>
+                            </div>
+                            <p class="status-indicator" id="traffic-status">สถานะระบบ: ปกติ (รถเคลื่อนผ่านได้ทีละคัน)</p>
+                        </div>
+                    </div>
+                    <div class="lesson-interactive">
+                        <div class="interactive-card">
+                            <!-- Traffic Analogy SVG Simulation -->
+                            <svg viewBox="0 0 300 300" class="traffic-svg" id="trafficSvg">
+                                <!-- Roads Background -->
+                                <rect x="0" y="0" width="300" height="300" fill="#E8E2D9" />
+                                <!-- Vertical Road -->
+                                <rect x="100" y="0" width="100" height="300" fill="#7D7461" />
+                                <!-- Horizontal Road -->
+                                <rect x="0" y="100" width="300" height="100" fill="#7D7461" />
+                                
+                                <!-- Road Markings -->
+                                <line x1="150" y1="0" x2="150" y2="100" stroke="#fff" stroke-width="2" stroke-dasharray="8 6"/>
+                                <line x1="150" y1="200" x2="150" y2="300" stroke="#fff" stroke-width="2" stroke-dasharray="8 6"/>
+                                <line x1="0" y1="150" x2="100" y2="150" stroke="#fff" stroke-width="2" stroke-dasharray="8 6"/>
+                                <line x1="200" y1="150" x2="300" y2="150" stroke="#fff" stroke-width="2" stroke-dasharray="8 6"/>
+
+                                <!-- Intersection outline -->
+                                <rect x="100" y="100" width="100" height="100" fill="none" stroke="#F2CC8F" stroke-width="2" stroke-dasharray="4 4" />
+
+                                <!-- Resource Area Labels -->
+                                <text x="125" y="125" font-family="sans-serif" font-size="9" fill="#F2CC8F" opacity="0.8" text-anchor="middle">R1</text>
+                                <text x="175" y="125" font-family="sans-serif" font-size="9" fill="#F2CC8F" opacity="0.8" text-anchor="middle">R2</text>
+                                <text x="175" y="175" font-family="sans-serif" font-size="9" fill="#F2CC8F" opacity="0.8" text-anchor="middle">R3</text>
+                                <text x="125" y="175" font-family="sans-serif" font-size="9" fill="#F2CC8F" opacity="0.8" text-anchor="middle">R4</text>
+
+                                <!-- Car A (Red) - from left going right (bottom lane) -->
+                                <g id="car-A" class="car" transform="translate(40, 165)">
+                                    <rect x="-20" y="-10" width="40" height="20" rx="4" fill="#C85A53" />
+                                    <rect x="10" y="-8" width="8" height="16" fill="#fff" opacity="0.8" />
+                                    <text x="0" y="4" font-family="sans-serif" font-size="10" font-weight="bold" fill="#fff" text-anchor="middle">A</text>
+                                </g>
+
+                                <!-- Car B (Yellow) - from bottom going up (right lane) -->
+                                <g id="car-B" class="car" transform="translate(165, 260)">
+                                    <rect x="-10" y="-20" width="20" height="40" rx="4" fill="#EBB15B" />
+                                    <rect x="-8" y="-18" width="16" height="8" fill="#fff" opacity="0.8" />
+                                    <text x="0" y="4" font-family="sans-serif" font-size="10" font-weight="bold" fill="#2F3E46" text-anchor="middle">B</text>
+                                </g>
+
+                                <!-- Car C (Blue) - from right going left (top lane) -->
+                                <g id="car-C" class="car" transform="translate(260, 125)">
+                                    <rect x="-20" y="-10" width="40" height="20" rx="4" fill="#5885A2" />
+                                    <rect x="-18" y="-8" width="8" height="16" fill="#fff" opacity="0.8" />
+                                    <text x="0" y="4" font-family="sans-serif" font-size="10" font-weight="bold" fill="#fff" text-anchor="middle">C</text>
+                                </g>
+
+                                <!-- Car D (Green) - from top going down (left lane) -->
+                                <g id="car-D" class="car" transform="translate(125, 40)">
+                                    <rect x="-10" y="-20" width="20" height="40" rx="4" fill="#7FA99B" />
+                                    <rect x="-8" y="10" width="16" height="8" fill="#fff" opacity="0.8" />
+                                    <text x="0" y="4" font-family="sans-serif" font-size="10" font-weight="bold" fill="#fff" text-anchor="middle">D</text>
+                                </g>
+
+                                <!-- Collision Alert (Hidden by default) -->
+                                <g id="collision-alert" transform="translate(150, 150)" opacity="0" style="transition: opacity 0.3s ease;">
+                                    <path d="M 0,-30 L 30,20 L -30,20 Z" fill="#C85A53" stroke="#fff" stroke-width="2"/>
+                                    <text x="0" y="14" font-family="sans-serif" font-size="24" font-weight="bold" fill="#fff" text-anchor="middle">!</text>
+                                    <text x="0" y="38" font-family="'Noto Sans Thai'" font-size="12" font-weight="bold" fill="#C85A53" text-anchor="middle" stroke="#fff" stroke-width="3" paint-order="stroke">DEADLOCK!</text>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content 2: Coffman Conditions -->
+            <div class="tab-content" id="tab-coffman">
+                <div class="lesson-grid">
+                    <div class="lesson-desc">
+                        <h3 class="lesson-subtitle-thai">เงื่อนไข 4 ประการของการเกิด Deadlock</h3>
+                        <p>นักวิทยาศาสตร์คอมพิวเตอร์ Edward G. Coffman Jr. ได้เสนอว่า Deadlock จะเกิดขึ้นก็ต่อเมื่อระบบมีสภาวะตามกฎ <strong>4 ข้อนี้พร้อมกัน</strong>:</p>
+                        
+                        <div class="conditions-accordion">
+                            <div class="acc-item active" data-cond="1">
+                                <div class="acc-header">
+                                    <span class="cond-num">1</span>
+                                    <h4>Mutual Exclusion (การไม่ใช้ร่วมกัน)</h4>
+                                </div>
+                                <div class="acc-body">
+                                    <p>ทรัพยากรนั้นจะต้องมีลักษณะที่ให้มีเพียงโปรเซสเดียวเท่านั้นที่เข้าใช้งานได้ ณ ขณะใดขณะหนึ่ง เช่น เครื่องพิมพ์ (Printer) หรือการจองคีย์ลัดแก้ไขไฟล์เดียวกัน</p>
+                                </div>
+                            </div>
+                            <div class="acc-item" data-cond="2">
+                                <div class="acc-header">
+                                    <span class="cond-num">2</span>
+                                    <h4>Hold and Wait (การถือครองและรอคอย)</h4>
+                                </div>
+                                <div class="acc-body">
+                                    <p>กระบวนการต้องถือครองทรัพยากรอย่างน้อย 1 ชิ้นไว้อยู่แล้ว และกำลังรอทรัพยากรเพิ่มที่ยังขาดอยู่ซึ่งถูกถือครองโดยโปรเซสอื่น</p>
+                                </div>
+                            </div>
+                            <div class="acc-item" data-cond="3">
+                                <div class="acc-header">
+                                    <span class="cond-num">3</span>
+                                    <h4>No Preemption (ไม่สามารถแทรกแซงได้)</h4>
+                                </div>
+                                <div class="acc-body">
+                                    <p>ระบบปฏิบัติการไม่สามารถไปแย่งชิงหรือดึงทรัพยากรคืนมาจากโปรเซสที่ถืออยู่ได้ ต้องรอให้โปรเซสนั้นๆ ทำงานเสร็จสิ้นและคืนทรัพยากรกลับมาเอง</p>
+                                </div>
+                            </div>
+                            <div class="acc-item" data-cond="4">
+                                <div class="acc-header">
+                                    <span class="cond-num">4</span>
+                                    <h4>Circular Wait (การรอคอยเป็นวงกลม)</h4>
+                                </div>
+                                <div class="acc-body">
+                                    <p>มีห่วงโซ่แห่งการรอคอยในลักษณะวงกลม เช่น P0 รอทรัพยากรจาก P1, P1 รอทรัพยากรจาก P2, และ P2 รอทรัพยากรจาก P0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lesson-interactive">
+                        <div class="interactive-card">
+                            <h4>แผนภาพกราฟจัดสรรทรัพยากร (Resource Allocation Graph)</h4>
+                            <p class="card-hint">คลิกปุ่มเพื่อสร้างสถานการณ์เกิดการวนลูปของเงื่อนไข Circular Wait</p>
+                            
+                            <svg viewBox="0 0 320 320" class="rag-svg" id="ragSvg">
+                                <!-- Process Nodes (Circles) -->
+                                <g transform="translate(70, 80)" class="rag-node" id="node-P1">
+                                    <circle cx="0" cy="0" r="30" fill="#FAF6F0" stroke="#E07A5F" stroke-width="3" />
+                                    <text x="0" y="5" font-family="sans-serif" font-size="12" font-weight="bold" fill="#2F3E46" text-anchor="middle">P1</text>
+                                </g>
+                                <g transform="translate(250, 240)" class="rag-node" id="node-P2">
+                                    <circle cx="0" cy="0" r="30" fill="#FAF6F0" stroke="#E07A5F" stroke-width="3" />
+                                    <text x="0" y="5" font-family="sans-serif" font-size="12" font-weight="bold" fill="#2F3E46" text-anchor="middle">P2</text>
+                                </g>
+
+                                <!-- Resource Nodes (Squares) -->
+                                <g transform="translate(250, 80)" class="rag-node" id="node-R1">
+                                    <rect x="-25" y="-25" width="50" height="50" rx="6" fill="#FAF6F0" stroke="#F2CC8F" stroke-width="3" />
+                                    <circle cx="0" cy="0" r="6" fill="#2F3E46" />
+                                    <text x="0" y="-32" font-family="sans-serif" font-size="10" font-weight="bold" fill="#5C5F7A" text-anchor="middle">R1</text>
+                                </g>
+                                <g transform="translate(70, 240)" class="rag-node" id="node-R2">
+                                    <rect x="-25" y="-25" width="50" height="50" rx="6" fill="#FAF6F0" stroke="#F2CC8F" stroke-width="3" />
+                                    <circle cx="0" cy="0" r="6" fill="#2F3E46" />
+                                    <text x="0" y="38" font-family="sans-serif" font-size="10" font-weight="bold" fill="#5C5F7A" text-anchor="middle">R2</text>
+                                </g>
+
+                                <!-- Assignment edges (Resource to Process) - Safe State Lines -->
+                                <path id="edge-r2-p1" d="M 70,215 L 70,115" stroke="#7FA99B" stroke-width="2.5" marker-end="url(#rag-arrow-green)" fill="none" />
+                                <path id="edge-r1-p2" d="M 250,110 L 250,205" stroke="#7FA99B" stroke-width="2.5" marker-end="url(#rag-arrow-green)" fill="none" />
+
+                                <!-- Request edges (Process to Resource) - Red Dashed lines -->
+                                <path id="edge-p1-r1" d="M 105,80 L 220,80" stroke="#C85A53" stroke-width="2.5" stroke-dasharray="4 4" marker-end="url(#rag-arrow-red)" fill="none" />
+                                <path id="edge-p2-r2" d="M 215,240 L 100,240" stroke="#C85A53" stroke-width="2.5" stroke-dasharray="4 4" marker-end="url(#rag-arrow-red)" fill="none" opacity="0.1" />
+
+                                <!-- RAG Arrows definitions -->
+                                <defs>
+                                    <marker id="rag-arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#7FA99B"/>
+                                    </marker>
+                                    <marker id="rag-arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#C85A53"/>
+                                    </marker>
+                                </defs>
+                            </svg>
+                            <div class="rag-controls">
+                                <button class="btn btn-sm btn-outline active" id="btn-rag-safe">จำลองสภาวะปกติ</button>
+                                <button class="btn btn-sm btn-danger" id="btn-rag-deadlock">สร้างวงจรอับ (Circular Wait)</button>
+                            </div>
+                            <div class="rag-explanation" id="rag-exp-text">
+                                <span class="badge badge-success">สถานะ: ปลอดภัย (Safe)</span> R2 จัดสรรให้ P1 และ R1 จัดสรรให้ P2 แม้ P1 ร้องขอ R1 แต่เมื่อ P2 ทำงานเสร็จก็สามารถปล่อย R1 ให้ P1 ได้
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content 3: Handling -->
+            <div class="tab-content" id="tab-handling">
+                <div class="handling-grid">
+                    <div class="handling-card">
+                        <div class="handling-header text-prevention">
+                            <span class="icon-circle">🛡️</span>
+                            <h4>1. การป้องกัน (Deadlock Prevention)</h4>
+                        </div>
+                        <div class="handling-body">
+                            <p>กำจัดเงื่อนไขในการเกิด Deadlock อย่างน้อย 1 ใน 4 ข้อของ Coffman อย่างสิ้นเชิง เช่น:</p>
+                            <ul>
+                                <li><strong>ยกเลิก Hold & Wait:</strong> บังคับให้โปรเซสต้องขอทรัพยากรทุกชิ้นที่ต้องใช้ตั้งแต่เริ่มทำงาน หากได้ไม่ครบก็จะไม่ยอมให้จัดสรรชิ้นแรก</li>
+                                <li><strong>ยอมให้แทรกแซง (Preemption):</strong> หากกระบวนการต้องการทรัพยากรเพิ่มแต่ไม่ได้ ให้ปล่อยทรัพยากรทั้งหมดที่ถือครองอยู่กลับเข้าสู่ระบบก่อน</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="handling-card">
+                        <div class="handling-header text-avoidance">
+                            <span class="icon-circle">🧠</span>
+                            <h4>2. การหลีกเลี่ยง (Deadlock Avoidance)</h4>
+                        </div>
+                        <div class="handling-body">
+                            <p>วิเคราะห์คำขอของระบบอย่างยืดหยุ่น โดยพิจารณา "สถานะปลอดภัย" (Safe State) ก่อนการจัดสรรทรัพยากรเสมอ</p>
+                            <ul>
+                                <li><strong>Banker's Algorithm:</strong> จำลองการกู้ยืมเงินของธนาคาร ถ้าการให้ยืมทำให้เงินสำรองไม่พอจ่ายลูกค้ารายอื่นที่กู้ไปแล้ว ธนาคารจะให้ลูกค้ารอไปก่อนเพื่อความปลอดภัย</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="handling-card">
+                        <div class="handling-header text-detection">
+                            <span class="icon-circle">🔍</span>
+                            <h4>3. การตรวจจับและกู้คืน (Detection & Recovery)</h4>
+                        </div>
+                        <div class="handling-body">
+                            <p>ปล่อยให้ระบบรันไปตามปกติ และมีโปรแกรมตรวจจับ RAG เป็นระยะ หากเกิดวงจรอับ จะทำการแก้ไขทันที:</p>
+                            <ul>
+                                <li><strong>Process Termination:</strong> ยกเลิกหรือปิดโปรเซสบางตัวในลูปที่เป็นต้นเหตุของการเกิด Deadlock</li>
+                                <li><strong>Resource Preemption:</strong> แย่งชิงทรัพยากรบางตัวคืนมาแบบชั่วคราวและทำการ Rollback โปรเซสนั้นๆ กลับไปทำใหม่</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="handling-card">
+                        <div class="handling-header text-ostrich">
+                            <span class="icon-circle">🐦</span>
+                            <h4>4. วิธีนกกระจอกเทศ (Ostrich Algorithm)</h4>
+                        </div>
+                        <div class="handling-body">
+                            <p><strong>"ทำตัวเสมือนไม่เคยมีอะไรเกิดขึ้น"</strong> เหมือนนกกระจอกเทศที่เอาหัวมุดทรายเมื่อเจออันตราย</p>
+                            <ul>
+                                <li>หาก Deadlock เกิดขึ้นได้ยากมากในระบบปฏิบัติการทั่วไป (เช่น Windows หรือ Linux) การเขียนระบบป้องกันที่ซับซ้อนและกินเครื่อง อาจได้ไม่คุ้มเสีย วิธีแก้ที่ดีที่สุดคือ <strong>"การบูตเครื่องใหม่" (Reboot)</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Section -->
+    <section id="game-section" class="section game-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Educational Simulator</span>
+                <h2 class="section-title">เกมจำลองจัดสรร: Deadlock Dispatcher</h2>
+                <p class="section-subtitle">คุณคือตัวจัดตารางงาน (OS Scheduler) เลือกด่านและตอบอนุมัติคำขอให้ถูกต้องตามหลัก Banker's Algorithm เพื่อไม่ให้ระบบเกิดวงจรอับ!</p>
+            </div>
+
+            <!-- Game Dashboard -->
+            <div class="game-dashboard">
+                <!-- Level Selector and Stats -->
+                <div class="game-top-bar">
+                    <div class="level-tabs" id="game-levels">
+                        <button class="level-btn active" data-level="1">ด่าน 1: แหล่งเดียวจำลอง</button>
+                        <button class="level-btn" data-level="2">ด่าน 2: ทรัพยากรคู่</button>
+                        <button class="level-btn" data-level="3">ด่าน 3: สมดุลธนาคาร</button>
+                    </div>
+                    <div class="game-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">พลังชีวิต (OS Safety):</span>
+                            <span class="stat-value" id="game-safety">🟢 ปลอดภัย</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">โปรเซสเสร็จสิ้น:</span>
+                            <span class="stat-value" id="game-score">0 / 3</span>
+                        </div>
+                        <button class="btn btn-sm btn-secondary" id="btn-reset-level">🟢 รีเซ็ตด่าน</button>
+                    </div>
+                </div>
+
+                <div class="game-workspace">
+                    <!-- Left Side: System Resource Pools -->
+                    <div class="game-resources-panel">
+                        <h3>ระบบทรัพยากรว่าง (Available Pool)</h3>
+                        <p class="panel-desc">ทรัพยากรคงเหลือที่สามารถจัดสรรให้โปรเซสต่างๆ ยืมไปใช้ได้ทันที</p>
+                        
+                        <div class="resource-container" id="available-resources">
+                            <!-- Injected by JavaScript dynamically -->
+                            <div class="resource-card res-ram">
+                                <span class="res-icon">💻</span>
+                                <div class="res-details">
+                                    <span class="res-title">หน่วยความจำ (RAM)</span>
+                                    <span class="res-qty" id="avail-ram">3</span>
+                                </div>
+                            </div>
+                            <div class="resource-card res-disk">
+                                <span class="res-icon">💾</span>
+                                <div class="res-details">
+                                    <span class="res-title">พื้นที่เก็บข้อมูล (Disk)</span>
+                                    <span class="res-qty" id="avail-disk">2</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- System Status Log -->
+                        <div class="log-panel">
+                            <h4>บันทึกเหตุการณ์ (System Log)</h4>
+                            <div class="log-entries" id="game-log">
+                                <div class="log-entry system-msg">ระบบเริ่มต้น... โปรดตัดสินใจจัดสรรทรัพยากร</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Active Processes List -->
+                    <div class="game-processes-panel">
+                        <h3>รายการกระบวนการ (Processes)</h3>
+                        <p class="panel-desc">กดปุ่ม <strong>"อนุมัติ"</strong> เพื่อให้ทรัพยากรตามที่ขอ หรือปุ่ม <strong>"ให้รอ"</strong> เพื่อระงับสิทธิ์ไว้ชั่วคราว</p>
+                        
+                        <div class="process-cards-list" id="process-list">
+                            <!-- Injected by Javascript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Instructions Guide -->
+            <div class="game-guide-card">
+                <h4>💡 เคล็ดลับการเอาชนะด่าน:</h4>
+                <p>ในการพิจารณาว่าเราสามารถอนุมัติคำขอได้หรือไม่ ให้ทดลองคิดว่า <strong>"ถ้าเราอนุมัติให้ตามที่ขอแล้ว ระบบจะมีทรัพยากรเหลือเพียงพอที่จะช่วยเหลืออย่างน้อยหนึ่งโปรเซสให้เสร็จสมบูรณ์จนจบงานหรือไม่?"</strong> หากไม่เหลือใครที่ทำงานเสร็จได้เลย ระบบจะเข้าสู่ภาวะไม่ปลอดภัยและเกิด Deadlock!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Notification Modals -->
+    <!-- Win Modal -->
+    <div class="modal-overlay" id="modal-win">
+        <div class="modal-card">
+            <div class="modal-header header-win">
+                <span class="modal-icon">🏆</span>
+                <h2>ยินดีด้วย! ภารกิจสำเร็จ</h2>
+            </div>
+            <div class="modal-body">
+                <p id="modal-win-text">คุณจัดการตารางเวลาทรัพยากรได้ไร้ที่ติ หลีกเลี่ยงวงจรอับได้อย่างปลอดภัยทุกขั้นตอน</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="btn-next-level">เล่นด่านต่อไป</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lose Modal -->
+    <div class="modal-overlay" id="modal-lose">
+        <div class="modal-card">
+            <div class="modal-header header-lose">
+                <span class="modal-icon">⚠️</span>
+                <h2>ระบบเกิดวงจรอับ (Deadlock!)</h2>
+            </div>
+            <div class="modal-body">
+                <p id="modal-lose-text">การอนุมัติทรัพยากรทำให้เกิดวัฏจักรรอคอยที่ไม่สามารถหาทางสิ้นสุดได้ ทุกโปรเซสค้างถาวร</p>
+                <div class="lose-reason-panel" id="modal-lose-reason">
+                    <!-- Reason injected here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="btn-retry-level">ลองใหม่อีกครั้ง</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Completed Modal -->
+    <div class="modal-overlay" id="modal-complete">
+        <div class="modal-card">
+            <div class="modal-header header-complete">
+                <span class="modal-icon">🎓</span>
+                <h2>สุดยอดผู้เชี่ยวชาญการจัดการระบบ!</h2>
+            </div>
+            <div class="modal-body">
+                <p>คุณผ่านด่านทั้งหมดสำเร็จแล้ว! คุณได้รับความเข้าใจในการทำง่านของระบบปฏิบัติการและการป้องกันวงจรอับอย่างถ่องแท้</p>
+                <div class="achievement-badge">
+                    <span>🎖️ OS Deadlock Master</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="btn-restart-game">เริ่มต้นเล่นใหม่ทั้งหมด</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 สื่อการเรียนรู้วิชาการออกแบบระบบปฏิบัติการ (Operating Systems Design) | จัดทำขึ้นเพื่อการศึกษา</p>
+        </div>
+    </footer>
+
+    <!-- App Script -->
+    <script src="app.js"></script>
+</body>
+</html>
